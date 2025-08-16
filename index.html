@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Confession 💌</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #e6e6fa, #d8bfd8);
+      color: white;
+      text-align: center;
+      padding: 80px;
+      transition: background 0.5s ease;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #4b0082;
+    }
+    p {
+      font-size: 1.4rem;
+      color: #2e0854;
+    }
+    button, .start-btn {
+      margin: 20px;
+      padding: 15px 40px;
+      border: none;
+      border-radius: 20px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
+    }
+    .start-btn {
+      background: #fff;
+      color: #6a0dad;
+      font-weight: bold;
+    }
+    .start-btn:hover { background: #9370db; color: #fff; }
+    .yes { background: #9370db; color: white; }
+    .no { background: #ba55d3; color: white; }
+    button:hover { opacity: 0.85; }
+    img {
+      max-width: 280px;
+      margin: 15px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app"></div>
+
+  <script>
+    const app = document.getElementById("app");
+
+    // 20 Sweet NO messages & GIFs
+    const noAttempts = [
+      { text: "🥺 Please don’t break my heart… give me a chance 💕", gif: "https://i.pinimg.com/originals/97/d2/7e/97d27ef382ea9b8ed2c5a390cc1a8cf4.gif" },
+      { text: "🌸 Look into my eyes again… they’re only asking for YOU 💜", gif: "https://i.pinimg.com/originals/25/e2/a4/25e2a496c8204acd1e5c459d86d905e4.gif" },
+      { text: "😔 If you say no, I’ll just keep asking… forever 💫", gif: "https://i.pinimg.com/originals/ce/52/60/ce52606293142a2bd11cda1d3f0dc12c.gif" },
+      { text: "🥹 I know you want to say YES… so why not now? 💟", gif: "https://i.pinimg.com/originals/17/38/52/1738526f211878bb184ea8809b6133d0.gif" },
+      { text: "💜 A 'No' can’t stop me… my heart belongs to you 🌸", gif: "https://i.pinimg.com/originals/95/3c/48/953c481e3ab84ce34dc669ecb3b4b398.gif" },
+      { text: "😳 Don’t make me blush alone here… say YES already 💖", gif: "https://i.pinimg.com/originals/99/d5/cb/99d5cb2a2cfbaab074e81c515c1be892.gif" },
+      { text: "🥺 I promise I’ll annoy you with love forever 💕", gif: "https://i.pinimg.com/originals/a9/71/5e/a9715ee619aab558db3d8a791d5df894.gif" },
+      { text: "🌸 You’re too cute to say no… just admit it 💟", gif: "https://i.pinimg.com/originals/9c/c9/a0/9cc9a05e21b99ee8bc4cd5d62901dc99.gif" },
+      { text: "😢 If No means ‘Not yet’, I’ll wait… but please say YES 💜", gif: "https://i.pinimg.com/originals/33/37/3f/33373fca4b0ce272e895d20d836a7ae9.gif" },
+      { text: "✨ The stars told me you’d say YES eventually 💫", gif: "https://i.pinimg.com/originals/14/40/6a/14406a6326bac5ccac8a3f09a122dcac.gif" },
+      { text: "💟 You’re my favorite daydream… don’t say no 🌸", gif: "https://i.pinimg.com/originals/b9/7e/bc/b97ebc8cc16d5ad5376c2d0a3af3ca0c.gif" },
+      { text: "🥹 Even the universe is cheering for us 💜", gif: "https://i.pinimg.com/originals/6e/5b/28/6e5b287696272d6f0802e290a449fa7c.gif" },
+      { text: "🌹 You can’t escape me… I’m your destiny 💘", gif: "https://i.pinimg.com/originals/47/8e/5f/478e5f1c146ae3ecbc54ec97ed47e787.gif" },
+      { text: "😔 A No? That just means I’ll ask sweeter next time 💜", gif: "https://i.pinimg.com/originals/41/e3/9a/41e39aaf6f0ab92a5d48c25f932bf021.gif" },
+      { text: "💖 Stop being stubborn… my heart is waiting 🌸", gif: "https://i.pinimg.com/originals/9f/03/b2/9f03b2e2aa603bd6a73dbe67881a6b19.gif" },
+      { text: "🥺 You know deep down it’s a YES 💟", gif: "https://i.pinimg.com/originals/98/ef/8c/98ef8c01964aedacd7e5fe5d1bd06b18.gif" },
+      { text: "🌸 Let’s make it official… no more No’s 💜", gif: "https://i.pinimg.com/originals/42/44/c8/4244c8f8350888efcdd588554367cdcb.gif" },
+      { text: "😢 My heart skipped a beat… don’t let it stop 💕", gif: "https://i.pinimg.com/originals/f4/d7/97/f4d797a66f844ee3ea659e347f8a9a1b.gif" },
+      { text: "💟 One YES will make my whole world brighter 🌸", gif: "https://i.pinimg.com/originals/4d/a9/62/4da96224ed8f6de6ea5f355112d3e2f8.gif" },
+      { text: "🥹 Last chance… say YES and I’ll smile forever 💜", gif: "https://i.pinimg.com/originals/7e/62/3e/7e623e17dd8c776aee5e0c3e0e9534c9.gif" }
+    ];
+    
+    let noIndex = 0;
+    let noPressCount = 0;
+
+    // Page 1
+    function showIntro() {
+      app.innerHTML = `
+        <h1>💖 Hi Princess 💖</h1>
+        <p>
+“Umm… so there’s something I’ve been wanting to tell you 🙈💓 Every time I see you, my heart does this weird little dance 😅💃 and I just can’t stop smiling. Honestly, you’ve kinda stolen my thoughts… and maybe even my heart 💕 ”</p>
+        <button class="start-btn" onclick="showQuestion()">so.... ➡️</button>
+      `;
+    }
+
+    // Page 2 (main question)
+    function showQuestion() {
+      document.body.style.background = "linear-gradient(135deg, #d8bfd8, #dda0dd)";
+      app.innerHTML = `
+        <p>  I’ve been wanting to tell you this for a while… you’ve become really special to me, and being with you just feels right 🥺✨. So today... I just want to ask… </p>
+<h1>  "🥺will you be mine?🥺"</h1>
+        <button class="yes" onclick="showYes()">Yes 😍</button>
+        <button id="noBtn" class="no" onclick="showNo()">No 😢</button>
+      `;
+    }
+
+    // YES Page
+    function showYes() {
+      document.body.style.background = "linear-gradient(135deg, #e6e6fa, #dda0dd)";
+      app.innerHTML = `
+        <h1>THANK YOU 💖</h1>
+        <p>Omg you said yes 😍💫 My heart’s literally doing a happy dance rn 💃🕺 You’re officially mine now 💕✨ and I swear I’m never letting you go 😘🔥
+</p>
+         <h2>"💕I LOVE U💕"</h2>
+        <img src="https://i.pinimg.com/originals/ab/a8/63/aba863536c38c09d4e7ca868ab126898.gif">
+        <img src="https://i.pinimg.com/originals/cd/0a/20/cd0a20fef75ed3cc003889583b99bc74.gif">
+       
+      `;
+    }
+
+    // NO Page (20 loops + runaway button)
+    function showNo() {
+      document.body.style.background = "linear-gradient(135deg, #c8a2c8, #dda0dd)";
+      const attempt = noAttempts[noIndex % noAttempts.length];
+      noPressCount++;
+      
+      let noButtonStyle = "";
+      if (noPressCount > 3) {
+        let size = Math.max(1.3 - noPressCount * 0.1, 0.5);
+        let x = Math.random() * (window.innerWidth - 120);
+        let y = Math.random() * (window.innerHeight - 80);
+        noButtonStyle = `style="transform: scale(${size}); position:absolute; left:${x}px; top:${y}px;"`;
+      }
+
+      app.innerHTML = `
+        <h1>${attempt.text}</h1>
+        <img src="${attempt.gif}">
+        <p>Think again… 💜</p>
+        <button class="yes" onclick="showYes()">Okay Fine 😍</button>
+        <button id="noBtn" class="no" ${noButtonStyle} onclick="showNo()">Still No 😢</button>
+      `;
+      noIndex++;
+    }
+
+    // Start with intro
+    showIntro();
+  </script>
+
+</body>
+</html>
